@@ -1,0 +1,163 @@
+<div>
+  <div class="flex flex-row justify-between">
+    <h1 class="text-3xl font-bold text-gray-800">
+      <%= candidate.first_name %>
+        <%= candidate.last_name %>
+    </h1>
+    <div class="flex flex-row">
+      <!-- Back Button -->
+      <a onclick="window.history.back()"
+        class="mr-2 flex items-center justify-center px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+
+      <!-- Edit Button (Opens Modal) -->
+      <button onclick="openModal()"
+        class="flex items-center justify-center px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
+        <i class="fas fa-edit"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Personal Information Section -->
+  <div class="mt-8 mb-8">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+      Personal Information
+    </h2>
+    <div class="grid grid-cols-2 gap-2">
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Email</dt>
+        <dd class="text-gray-500">
+          <%= candidate.email %>
+        </dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Phone</dt>
+        <dd class="text-gray-500">
+          <%= candidate.phone %>
+        </dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Date of Birth</dt>
+        <dd class="text-gray-500">
+          <%= candidate.date_of_birth %>
+        </dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Gender</dt>
+        <dd class="text-gray-500">
+          <%= candidate.gender %>
+        </dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Marital Status</dt>
+        <dd class="text-gray-500">
+          <%= candidate.marital_status %>
+        </dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-xs font-semibold">Residence</dt>
+        <dd class="text-gray-500">
+          <%= candidate.residence %>
+        </dd>
+      </div>
+    </div>
+  </div>
+
+  <!-- Education Section -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Education</h2>
+    <% if ( candidate && candidate.resume && candidate.resume.education && candidate.resume.education.length> 0) { %> <%
+        candidate.resume.education.forEach(function(edu) { %>
+        <div class="mb-4 p-4 border-l-4 border-blue-500 bg-gray-50 shadow">
+          <div class="flex justify-between">
+            <h2 class="font-bold">
+              <%= edu.degree %>
+            </h2>
+            <div>
+              <p class="text-gray-800">
+                <%= edu.institution %>
+              </p>
+              <p class="text-xs font-medium">
+                <%= edu.start_date %> - <%= edu.end_date %>
+              </p>
+              <% if (edu.grade) { %>
+                <p class="text-xs font-medium">
+                  <%= edu.grade %>
+                </p>
+                <% } %>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+          <% } else { %>
+            <p class="text-gray-500">No education records found.</p>
+            <% } %>
+  </div>
+
+  <!-- Work Experience Section -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Work Experience</h2>
+    <% if (candidate && candidate.resume && candidate.resume.work_experience && candidate.resume.work_experience.length>
+      0) { %> <% candidate.resume.work_experience.forEach(function(job) { %>
+        <div class="mb-4 p-4 border-l-4 border-green-500 bg-gray-50 shadow">
+          <div class="flex justify-between mb-2">
+            <h2 class="font-bold">
+              <%= job.job_title %>
+            </h2>
+            <div>
+              <p class="text-gray-800">
+                <%= job.company %>
+              </p>
+              <p class="text-xs font-medium">
+                <%= job.start_date %> - <%= job.end_date %>
+              </p>
+            </div>
+          </div>
+          <p class="text-xs text-justify">
+            <%= job.summary %>
+          </p>
+        </div>
+        <% }); %>
+          <% } else { %>
+            <p class="text-gray-500">No work experience records found.</p>
+            <% } %>
+  </div>
+
+  <!-- Skills Section -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Skills</h2>
+    <!-- Add similar loop structure here for skills -->
+    <% if (candidate && candidate.resume && candidate.resume.skills && candidate.resume.skills.length> 0) { %>
+      <ul class="list-disc pl-5 space-y-1 text-gray-600">
+        <% candidate.resume.skills.forEach(function(skill) { %>
+          <li>
+            <%= skill.skill %>
+          </li>
+          <% }); %>
+      </ul>
+      <% } else { %>
+        <p class="text-gray-500">No skills listed.</p>
+        <% } %>
+  </div>
+
+  <%- include('editProfile') %>
+
+   <script>
+      function openModal() {
+        document.getElementById("modal").classList.remove("hidden");
+        document
+          .getElementById("modal-content")
+          .classList.remove("translate-x-full");
+      }
+
+      function closeModal() {
+        document
+          .getElementById("modal-content")
+          .classList.add("translate-x-full");
+        setTimeout(() => {
+          document.getElementById("modal").classList.add("hidden");
+        }, 300); // Timeout to match transition duration
+      }
+    </script>
+</div>

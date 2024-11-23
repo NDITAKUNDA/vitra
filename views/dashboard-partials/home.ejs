@@ -1,0 +1,92 @@
+<!-- Header -->
+<header class="flex justify-between items-center pb-4 border-b border-gray-200"
+>
+  <h1 class="text-2xl font-semibold text-gray-800">
+    Welcome, <%= candidate.first_name %>!
+  </h1>
+</header>
+<!-- Dashboard Cards -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-poppins">
+  <!-- Profile Card -->
+  <div class="bg-white rounded-lg p-4 shadow-md">
+    <h2 class="text-xl font-semibold text-gray-800">
+      Profile Completion
+    </h2>
+    <p class="text-sm text-gray-500 mt-2">Account is 40% complete</p>
+    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-3">
+      <div
+        class="bg-blue-500 h-2.5 rounded-full"
+        style="width: 40%"
+      ></div>
+    </div>
+    <button
+      class="mt-4 bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-600"
+    >
+      Complete Profile
+    </button>
+  </div>
+
+  <!-- Notifications Card -->
+  <div class="p-4 bg-white rounded-lg shadow-md">
+    <a href="#">
+      <div class="flex items-center justify-between w-full">
+        <div class="inline-flex items-center">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/893/893257.png"
+            alt="Messages Icon"
+            class="w-6 h-6 mr-3"
+          />
+          <h3 class="font-bold text-base text-gray-800">Messages</h3>
+        </div>
+        <p class="text-xs text-gray-500">1 hour ago</p>
+      </div>
+      <p class="mt-1 text-sm">You have a new message</p>
+    </a>
+  </div>
+
+  <!-- Quick Shortcuts Card -->
+  <div class="bg-white rounded-lg p-4 shadow-md">
+    <h2 class="text-xl font-semibold text-gray-800">Quick Links</h2>
+    <ul class="mt-3 space-y-2">
+      <li>
+        <a href="#" class="text-blue-500 hover:underline"
+          >Edit Profile</a
+        >
+      </li>
+      <li>
+        <a href="#" class="text-blue-500 hover:underline"
+          >Privacy Settings</a
+        >
+      </li>
+      <li>
+        <a href="#" class="text-blue-500 hover:underline"
+          >Explore Features</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Detailed Section -->
+<div class="bg-white p-6 rounded-lg shadow mt-4">
+  <h2 class="text-xl font-semibold mb-4">Recent Applications</h2>
+  <!-- Table for Applications -->
+  <table class="w-full text-left table-fixed">
+    <thead>
+      <tr class="text-gray-600 uppercase text-sm leading-normal">
+        <th class="w-1/3 py-3 px-2">Job Title</th>
+        <th class="w-1/3 py-3 px-2">Company</th>
+        <th class="w-1/3 py-3 px-2">Status</th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-600 text-sm font-light">
+        <% applications.forEach(application => { %>
+            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                <td class="py-3 px-2"><%= application.title %></td>
+                <td class="py-3 px-2"><%= application.company %></td>
+                <td class="py-3 px-2"><%= application.status %></td>
+              </tr>
+        <% }); %>
+    </tbody>
+  </table>
+</div>

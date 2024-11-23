@@ -1,0 +1,272 @@
+<div id="modal"
+    class="fixed inset-0 flex items-center justify-end bg-gray-800 bg-opacity-50 hidden transition-opacity duration-300">
+
+    <div class="w-1/3 h-full bg-white shadow-lg p-6 overflow-y-auto transform translate-x-full transition-transform duration-300"
+        id="modal-content">
+        <h2 class="text-2xl font-semibold mb-4">Edit Your Information</h2>
+
+        <form method="post">
+            <section class="border border-1 border-gray-400 rounded-lg p-2">
+                <h3 class="text-lg font-semibold mb-2">Career Summary</h3>
+                <textarea name="summary" id="summary" rows="4" cols="50"
+                    class="w-full border px-4 py-2 border-gray-300 rounded-md outline-none focus:border-blue-800"></textarea>
+            </section>
+
+            <!-- Education -->
+            <section class="border border-1 border-gray-400 rounded-lg p-2 my-4">
+                <h3 class="text-lg font-semibold mb-2">Education</h3>
+                <div id="education-section" class="mb-4"></div>
+                <button id="add-education" onclick="addEducationFields()"
+                    class="px-3 py-2 text-white bg-blue-500 rounded-md">
+                    + Add Education
+                </button>
+            </section>
+
+            <!-- Work Experience -->
+            <section class="border border-1 border-gray-400 rounded-lg p-2">
+                <h3 class="text-lg font-semibold mb-2">Work Experience</h3>
+                <div id="experience-section" class="mb-4"></div>
+                <button id="add-experience" onclick="addExperienceFields()"
+                    class="px-3 py-2 text-white bg-blue-500 rounded-md">
+                    + Add Experience
+                </button>
+            </section>
+
+            <!-- Skills -->
+            <section class="border border-1 border-gray-400 rounded-lg p-2 my-4">
+                <h3 class="text-lg font-semibold mb-2">Skills</h3>
+                <div id="skill-section" class="mb-4"></div>
+                <button id="add-skill" onclick="addSkillFields()" class="px-3 py-2 text-white bg-blue-500 rounded-md">
+                    + Add Skill
+                </button>
+            </section>
+
+            <!-- candidate id -->
+             <input type="hidden" name="candidateId" value="672f02bf23acc3e2853e16d0">
+
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" onclick="closeModal()"
+                    class="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Close
+                </button>
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Saving modal -->
+<div id="saving-modal"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden transition-opacity duration-300">
+    <div class="w-1/3 bg-white shadow-lg p-6 rounded-lg text-center">
+        <!-- Saving State -->
+        <div id="saving-state" class="flex flex-col items-center">
+            <div class="loader mb-4"></div>
+            <div class="text-lg font-semibold">Saving...</div>
+        </div>
+
+        <!-- Saved State -->
+        <div id="saved-state" class="flex flex-col items-center hidden text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                class="w-12 h-12 mb-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <div class="text-lg font-semibold">Saved!</div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Function to add new education fields
+    const educationSection = document.getElementById("education-section");
+    function addEducationFields() {
+        const educationDiv = document.createElement("div");
+        educationDiv.classList.add("education-entry", "border", "p-4", "mb-4", "rounded-md", "bg-gray-100");
+
+        educationDiv.innerHTML = `
+<label class="block text-sm font-medium text-gray-700">Institution</label>
+<input type="text" name="institution" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+
+<label class="block text-sm font-medium text-gray-700">Degree</label>
+<input type="text" name="degree" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+
+<div class="grid grid-cols-2 mt-2">
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Level</label>
+        <select name="level" id="level" class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-md">
+            <option value="Ordinary Level">Ordinary Level</option>
+            <option value="Advanced Level">Advanced Level</option>
+            <option value="Bachelors">Bachelors</option>
+            <option value="Masters">Masters</option>
+            <option value="PHD">PHD</option>
+        </select>
+    </div>
+    <div class="ml-2">
+        <label class="block text-sm font-medium text-gray-700">Grade</label>
+        <select name="grade" id="grade" class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-md">
+            <option value="First Class">1</option>
+            <option value="Upper Second CLass">2.1</option>
+            <option value="Lower Second Class">2.2</option>
+            <option value="Pass">3</option>
+        </select>
+    </div>
+</div>
+
+<button type="button" class="remove-education px-2 py-1 mt-2 text-white bg-red-500 rounded-md">
+Remove
+</button>
+`;
+
+        // Add event listener for the "Remove" button
+        educationDiv.querySelector(".remove-education").addEventListener("click", () => {
+            educationDiv.remove();
+        });
+
+        educationSection.appendChild(educationDiv);
+    }
+
+    // Function to add new experience filds
+    const experienceSection = document.getElementById("experience-section");
+    function addExperienceFields() {
+        const experienceDiv = document.createElement("div");
+        experienceDiv.classList.add("experience-entry", "border", "p-4", "mb-4", "rounded-md", "bg-gray-100");
+
+        experienceDiv.innerHTML = `
+<label class="block text-sm font-medium text-gray-700">Company Name</label>
+<input type="text" name="company-name" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+
+<label class="block text-sm font-medium text-gray-700">Job Title</label>
+<input type="text" name="job-title" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+
+<div class="grid grid-cols-2 mt-2">
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Start Date</label>
+        <input type="text" name="start-date" placeholder="Jan 2024" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+    </div>
+    <div class="ml-2">
+        <label class="block text-sm font-medium text-gray-700">End Date</label>
+        <input type="text" name="end-date" placeholder="Dec 2024" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+    </div>
+</div>
+
+<label class="block mt-2 mb-2 text-sm font-medium text-gray-700">Job Summary</label>
+<textarea name="job-summary" id="job-summary" rows="4" cols="50"
+    class="w-full border px-4 py-2 border-gray-300 rounded-md outline-none focus:border-blue-800"></textarea>
+
+<button type="button" class="remove-experience px-2 py-1 mt-2 text-white bg-red-500 rounded-md">
+Remove
+</button>
+`;
+
+        // Add event listener for the "Remove" button
+        experienceDiv.querySelector(".remove-experience").addEventListener("click", () => {
+            experienceDiv.remove();
+        });
+
+        experienceSection.appendChild(experienceDiv);
+    }
+
+    // Function to add a new skill
+    const skillSection = document.getElementById("skill-section");
+    function addSkillFields() {
+        const skillDiv = document.createElement("div");
+        skillDiv.classList.add("skill-entry", "border", "p-4", "mb-4", "rounded-md", "bg-gray-100");
+
+        skillDiv.innerHTML = `
+<label class="block text-sm font-medium text-gray-700">Skill</label>
+<input type="text" name="skill" class="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md">
+
+<button type="button" class="remove-skill px-2 py-1 mt-2 text-white bg-red-500 rounded-md">
+    Remove
+</button>
+`;
+
+        // Add event listener for the "Remove" button
+        skillDiv.querySelector(".remove-skill").addEventListener("click", () => {
+            skillDiv.remove();
+        });
+
+        skillSection.appendChild(skillDiv);
+    }
+
+    // To handle the form submission
+    document.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // Collect summary
+        const summary = document.querySelector('#summary').value;
+
+        // Collect education entries
+        const educationEntries = Array.from(document.querySelectorAll('.education-entry')).map(entry => ({
+            institution: entry.querySelector('input[name="institution"]').value,
+            degree: entry.querySelector('input[name="degree"]').value,
+            level: entry.querySelector('select[name="level"]').value,
+        }));
+
+        // Collect experience entries
+        const experienceEntries = Array.from(document.querySelectorAll('.experience-entry')).map(entry => ({
+            company: entry.querySelector('input[name="company-name"]').value,
+            position: entry.querySelector('input[name="job-title"]').value,
+            startDate: entry.querySelector('input[name="start-date"]').value,
+            endDate: entry.querySelector('input[name="end-date"]').value,
+        }));
+
+        // Collect skills
+        const skills = Array.from(document.querySelectorAll('.skill-entry')).map(entry =>
+            entry.querySelector('input[name="skill"]').value
+        );
+
+        const candidateId = document.getElementsByName('candidateId').value;
+
+        // Create JSON object
+        const jsonData = {
+            summary,
+            education: educationEntries,
+            experience: experienceEntries,
+            skills,
+        };
+
+        // Show the saving modal
+        const savingModal = document.getElementById('saving-modal');
+        const savingState = document.getElementById('saving-state');
+        const savedState = document.getElementById('saved-state');
+
+        savingModal.classList.remove('hidden'); 
+        savingState.classList.remove('hidden'); 
+        savedState.classList.add('hidden');
+
+
+        try {
+            const response = await fetch('/candidate/edit' + candidateId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData),
+            });
+
+            if (response.ok) {
+                savingState.classList.add('hidden');
+                savedState.classList.remove('hidden'); 
+
+                setTimeout(() => {
+                    savingModal.classList.add('hidden');
+                    document.getElementById("modal").classList.add("hidden");
+                }, 2000);
+            } else {
+                console.error('Error saving data:', response.statusText);
+                alert('An error occurred while saving.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while saving.');
+        }
+
+    });
+
+</script>
