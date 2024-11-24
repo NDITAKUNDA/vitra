@@ -7,8 +7,8 @@ const resumeSchema = new mongoose.Schema({
       institution: { type: String, required: true },
       degree: { type: String, required: true },
       level: { type: String, required: true },
-      start_date: { type: Date, required: true },
-      end_date: { type: Date, required: true },
+      start_date: { type: String, required: true },
+      end_date: { type: String, required: true },
       grade: { type: String, default: "" }
     }
   ],
@@ -16,8 +16,8 @@ const resumeSchema = new mongoose.Schema({
     {
       company_name: { type: String, required: true },
       job_title: { type: String, required: true },
-      start_date: { type: Date, required: true },
-      end_date: { type: Date, required: true },
+      start_date: { type: String, required: true },
+      end_date: { type: String, required: true },
       summary: { type: String, default: "" }
     }
   ],
@@ -30,8 +30,8 @@ const resumeSchema = new mongoose.Schema({
     {
       name: { type: String, required: true },
       issuing_organization: { type: String, required: true },
-      issue_date: { type: Date, required: true },
-      expiration_date: { type: Date }
+      issue_date: { type: String, required: true },
+      expiration_date: { type: String }
     }
   ],
   languages_spoken: [
@@ -55,7 +55,7 @@ const candidateSchema = new mongoose.Schema(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     marital_status: { type: String, required: true},
-    date_of_birth: { type: Date, required: true},
+    date_of_birth: { type: String, required: true},
     gender: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },

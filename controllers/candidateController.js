@@ -1,58 +1,5 @@
 const bcrypt = require("bcrypt");
 const Candidate = require("../models/candidate");
-const session = require("express-session");
-
-// Get sign up page
-exports.getSignUpPage = (req, res) => {
-  const action = req.params.action;
-  title = action;
-  if (action === "signup") {
-    title = "Welcome to VITRA! Create an account to get started.";
-  } else if (action === "login") {
-    title = "Welcome Back! Enter your details and lets find that dream job.";
-  } else if (action === "reset") {
-    title = "Forgot your password, Let's help you log in.";
-  } else {
-    title = "Welcome to VITRA";
-  }
-  res.render("candidate/authentication", { section: action, title: title });
-};
-
-exports.getDashboard = (req, res) => {
-  // Retrieve candidate data from the session
-  const candidate = req.session.candidate;
-
-  if (!candidate) {
-    return res.status(401).json({ message: "Unauthorized. Please log in." });
-  }
-
-  // Example applications array
-  const applications = [
-    {
-      title: "Junior Web Developer",
-      company: "ABC Corp",
-      status: "In progress",
-    },
-    {
-      title: "Junior Software Developer",
-      company: "XYZ Corp",
-      status: "Rejected",
-    },
-    {
-      title: "Lead UI/UX Designer",
-      company: "ABC Corp",
-      status: "Interview scheduled",
-    },
-  ];
-
-  const action = req.params.action;
-  res.render("candidate/dashboard", {
-    candidate,
-    applications,
-    section: action,
-    title: action,
-  });
-};
 
 // Get all candidates
 exports.getCandidates = async (req, res) => {
@@ -66,79 +13,85 @@ exports.getCandidates = async (req, res) => {
 
 // Create a new candidate
 exports.createCandidate = async (req, res) => {
+  const {
+    password,
+    first_name,
+    last_name,
+    marital_status,
+    date_of_birth,
+    gender,
+    email,
+    phone,
+    highest_education,
+  } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create new Candidate Instance
+  const newCandidate = new Candidate({
+    password: hashedPassword,
+    first_name: first_name,
+    last_name: last_name,
+    marital_status: marital_status,
+    date_of_birth: date_of_birth,
+    gender: gender,
+    email: email,
+    phone: phone,
+    highest_education: highest_education,
+  });
+
   try {
-    // Collect the user input
-    const {
-      password,
-      first_name,
-      last_name,
-      marital_status,
-      date_of_birth,
-      gender,
-      email,
-      phone,
-      highest_education,
-    } = req.body;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Create new Candidate Instance
-    const newCandidate = new Candidate({
-      password: hashedPassword,
-      first_name: first_name,
-      last_name: last_name,
-      marital_status: marital_status,
-      date_of_birth: date_of_birth,
-      gender: gender,
-      email: email,
-      phone: phone,
-      highest_education: highest_education,
-    });
     const candidate = await newCandidate.save();
-
     req.session.candidate = candidate;
-    res.redirect("/candidate/d/dashboard/");
+
+    res.status(200).json({
+      status: "OK",
+      message: "Candidate registered successfully",
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({
+      status: "ERROR",
+      message: "Failed to register candidate",
+    });
   }
 };
 
 // Candidate Login
 exports.loginCandidate = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     // Find the candidate by username
-    const candidate = await Candidate.findOne({ username });
+    const candidate = await Candidate.findOne({ email });
     if (!candidate) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "User not found",
+      });
     }
 
     // Compare the entered password with the stored hashed password
     const isMatch = await bcrypt.compare(password, candidate.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Invalid password",
+      });
     }
 
+    // Store candidate in session
     req.session.candidate = candidate;
-    res.redirect("/candidate/d/dashboard/");
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
-// Update candidate by ID
-exports.updateCandidate = async (req, res) => {
-  try {
-    const candidate = await Candidate.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!candidate)
-      return res.status(404).json({ message: "Candidate not found" });
-    res.status(200).json(candidate);
+    // Respond with candidate info and status
+    res.status(200).json({
+      status: "OK",
+      message: "Login successful",
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({
+      status: "ERROR",
+      message: "Internal server error",
+    });
   }
 };
 
@@ -161,35 +114,40 @@ exports.modifyResume = async (req, res) => {
 
   try {
     // Find the candidate by ID and update
-    const updatedCandidate = await Candidate.findByIdAndUpdate(
+     const updatedCandidate = await Candidate.findByIdAndUpdate(
       candidateId,
       {
         $set: {
           "resume.summary": summary,
-          "resume.education": education,
-          "resume.work_experience": experience,
-          "resume.skills": skills,
+        },
+        $push: {
+          "resume.education": { $each: education },
+          "resume.work_experience": { $each: experience },
+          "resume.skills": { $each: skills },
         },
       },
       { new: true, runValidators: true }
     );
 
+
     // Check if the candidate was found and updated
     if (!updatedCandidate) {
-      return res.status(404).json({ message: "Candidate not found" });
+      return res.status(404).json({
+        status: "ERROR",
+        message: "Candidate not found",
+      });
     }
 
-    // Respond with the updated candidate document
-    res
-      .status(200)
-      .json({ message: "Candidate updated successfully", updatedCandidate });
+    // Respond with updated candidate info and status
+    res.status(200).json({
+      status: "OK",
+      message: "Candidate resume updated successfully",
+    });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while updating the candidate",
-        error: error.message,
-      });
+    res.status(500).json({
+      status: "ERROR",
+      message: "An error occurred while updating the candidate resume",
+      error: error.message
+    });
   }
 };

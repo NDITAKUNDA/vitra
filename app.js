@@ -12,10 +12,6 @@ const jobApplicationRoutes = require("./routes/jobApplicationRoutes");
 
 const app = express();
 
-// Set EJS as the view engine
-app.set("view engine", "ejs");
-
-
 // Middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,11 +27,8 @@ app.use(session({
   }
 }));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, "public")));
-
 // Routes
-app.use("/candidate", candidateRoutes);
+app.use("/api/candidate", candidateRoutes);
 app.use("/api/jobs", jobPostingRoutes);
 app.use("/api/applications", jobApplicationRoutes);
 
@@ -51,5 +44,3 @@ connectDB()
     console.error("Failed to connect to the database:", error.message);
     process.exit(1);
   });
-
-// npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --watch
